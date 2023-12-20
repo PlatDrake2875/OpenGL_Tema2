@@ -1,3 +1,4 @@
+// Oreo race
 // Codul sursa este adaptat dupa OpenGLBook.com
 
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
