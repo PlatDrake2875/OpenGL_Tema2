@@ -100,30 +100,30 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     }
 
     std::cout << "Loaded " << indices.size() << " indices" << std::endl;
-
-    ////////////////////////////////////////// ! Parte diferita de ce faceam noi pana acum
     
     //procesam materialele
-    //aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    ///*std::cout << "Numar de texturi difuze: " << material->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
-    //std::cout << "Numar de texturi speculare: " << material->GetTextureCount(aiTextureType_SPECULAR) << std::endl;
-    //std::cout << "Numar de texturi height: " << material->GetTextureCount(aiTextureType_HEIGHT) << std::endl;
-    //std::cout << "Numar de texturi ambient: " << material->GetTextureCount(aiTextureType_AMBIENT) << std::endl;*/
+    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    /*std::cout << "Numar de texturi difuze: " << material->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+    std::cout << "Numar de texturi speculare: " << material->GetTextureCount(aiTextureType_SPECULAR) << std::endl;
+    std::cout << "Numar de texturi height: " << material->GetTextureCount(aiTextureType_HEIGHT) << std::endl;
+    std::cout << "Numar de texturi ambient: " << material->GetTextureCount(aiTextureType_AMBIENT) << std::endl;*/
 
-    //// 1. diffuse maps
-    //std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    //textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-    //// 2. specular maps
-    //std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-    //textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    //// 3. normal maps
-    //std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-    //textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-    //// 4. height maps
-    //std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-    //textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+    // se incarca texturile diffuse
+    std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
-    //////////////////////////////////////////
+    // se incarca texturile speculare
+    std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+    // se incarca normal maps (pentru bump mapping)
+    std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+
+    // se incarca height maps (unde este cazul)
+    std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+    textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
 
     // returnam un obiect de tip Mesh format cu datele extrase din scena ASSIMP
     return Mesh(vertices, indices, textures);
@@ -136,25 +136,24 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
     {
         aiString str;
         mat->GetTexture(type, i, &str);
-        // pasul de optimizare; daca textura a fost incarcata in trecut doar o adaugam in vectorul de texturi
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
         {
             if (std::strcmp(textures_loaded[j].path.data(), str.C_Str()) == 0)
             {
                 textures.push_back(textures_loaded[j]);
-                skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+                skip = true; // daca textura a fost incarcata in trecut doar o adaugam in vectorul de texturi
                 break;
             }
         }
         if (!skip)
-        {   // if texture hasn't been loaded already, load it
+        {   // daca textura nu a mai fost incarcata pana acum, o incarcam
             Texture texture;
             texture.id = TextureFromFile(str.C_Str(), this->directory);
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);
-            textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecessary load duplicate textures.
+            textures_loaded.push_back(texture);  // adaugam textura in vectorul de texturi incarcate pentru a evita incarcarea repetata a aceleiasi texturi
         }
     }
     return textures;
@@ -164,7 +163,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
-    std::cout << "Trying to load texture from file with path " << path << " and filename " << filename << std::endl;
+    std::cout << "Se incarca textura de la path-ul " << path << " si filename " << filename << std::endl;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);

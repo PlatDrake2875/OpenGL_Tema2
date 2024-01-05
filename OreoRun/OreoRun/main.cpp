@@ -13,43 +13,79 @@
 #include <assimp/postprocess.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
+#include "Camera.h"
 
+int winWidth = 1280, winHeight = 720;
 GLuint projectionLocation, viewLocation;
 
-float width = 800, height = 600, znear = 1, fov = 30;
+Shader* shader;
+Model* oreo;
+Camera* camera;
 
-float alpha = 0.0f, beta = 0.0f, dist = 30.f;
-float Obsx = 100.f, Obsy = -38, Obsz = 50.f;
-float Refx = Obsx, Refy = Obsy, Refz = 0.0f;
-float Vx = 0.0f, Vy = 0.0f, Vz = -1.0f;
-float incr_alpha1 = 0.01f, incr_alpha2 = 0.01f;
+void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
+{
+	glViewport(0, 0, newWidth, newHeight);
+	winWidth = newWidth;
+	winHeight = newHeight;
+	camera->setViewWidthAndHeight(newWidth, newHeight);
+}
+
+void ProcessSpecialKeys(int key, int xx, int yy)
+{
+	camera->ProcessSpecialKeys(key, xx, yy);
+}
+
+void ProcessNormalKeys(unsigned char key, int x, int y)
+{
+	camera->ProcessNormalKeys(key, x, y);
+}
+
+void CreateModels() {
+	oreo = new Model("models/oreo_4/oreo_4.gltf");
+}
+
+void DestroyModels() {
+	delete oreo;
+}
 
 void Initialize(void)
 {
-	glClearColor(1.f, 1.f, 1.f, 1.0f); // culoarea de fond a ecranului
+	shader = new Shader("example.vert", "example.frag");
+	shader->use(); // pentru desenare se va folosi acest shader
+
+	// se obtin locatiile matricilor relativ la shaderul curent
+	projectionLocation = shader->getUniformLocation("projection");
+	viewLocation = shader->getUniformLocation("view");
+
+	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
+
+	CreateModels(); // initializam modelele 3d
+	
+	// initiem camera
+	camera = new Camera(glm::vec3(0.f, 0.f, 300.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, -1.f), winWidth, winHeight);
+}
+
+void Cleanup(void)
+{
+	DestroyModels();	// distruge modelele incarcate
+	delete shader;		// sterge obiectul shader
 }
 
 void RenderFunction(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT);       
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+	glEnable(GL_DEPTH_TEST);
 
-	Shader shader("example.vert", "example.frag");
-	projectionLocation = shader.getUniformLocation("projection");
-	viewLocation = shader.getUniformLocation("view");
-
-	glm::vec3 Obs = glm::vec3(Obsx, Obsy, Obsz);   // se schimba pozitia observatorului	
-	glm::vec3 PctRef = glm::vec3(Refx, Refy, Refz); // pozitia punctului de referinta
-	glm::vec3 Vert = glm::vec3(Vx, Vy, Vz); // verticala din planul de vizualizare 
-	glm::mat4 view = glm::lookAt(Obs, PctRef, Vert);
+	glm::mat4 view = camera->getViewMatrix();
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, &view[0][0]);
 
-	glm::mat4 projection = glm::infinitePerspective(fov, GLfloat(width) / GLfloat(height), znear);
+	glm::mat4 projection = camera->getProjectionMatrix();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
 
-	Model oreo("models/oreo_1/oreo.obj");
-	oreo.Draw(shader);
+	oreo->Draw(*shader);
+	camera->updateCamera();
 
-	 glutSwapBuffers();
+	glutSwapBuffers();
 	glFlush();
 }
 
@@ -57,14 +93,20 @@ void RenderFunction(void)
 int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowPosition(50, 50); // pozitia initiala a ferestrei
-	glutInitWindowSize(1280, 720); //dimensiunile ferestrei
-	glutCreateWindow("Oreo Run"); // titlul ferestrei
-	glewInit(); // nu uitati de initializare glew; trebuie initializat inainte de a a initializa desenarea
-	Initialize(); // apelam functia de initializare
+	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
+	glutInitWindowPosition(50, 50); 
+	glutInitWindowSize(winWidth, winHeight); 
+	glutCreateWindow("Oreo Run"); 
+	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALTA FUNCTIE DIN GLEW (SAU GL)
+	Initialize(); 
+	glutReshapeFunc(ReshapeWindowFunction);
 	glutDisplayFunc(RenderFunction);
+	glutIdleFunc(RenderFunction);
+	glutKeyboardFunc(ProcessNormalKeys);
+	glutSpecialFunc(ProcessSpecialKeys);
+	glutCloseFunc(Cleanup);
 	glutMainLoop();
-	
+
+	return 0;
 }
 
