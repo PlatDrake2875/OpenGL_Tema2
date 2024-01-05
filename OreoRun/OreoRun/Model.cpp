@@ -101,6 +101,10 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     
     //procesam materialele
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    /*std::cout << "Numar de texturi difuze: " << material->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+    std::cout << "Numar de texturi speculare: " << material->GetTextureCount(aiTextureType_SPECULAR) << std::endl;
+    std::cout << "Numar de texturi height: " << material->GetTextureCount(aiTextureType_HEIGHT) << std::endl;
+    std::cout << "Numar de texturi ambient: " << material->GetTextureCount(aiTextureType_AMBIENT) << std::endl;*/
 
     // 1. diffuse maps
     std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -156,6 +160,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
+    std::cout << "Trying to load texture from file with path " << path << " and filename " << filename << std::endl;
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -184,12 +189,16 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
         stbi_image_free(data);
     }
     else if (path == nullptr) {
-        std::cout << "Null pointer for texture path" << std::endl;
+        std::cout << "Pointer null pentru textura data" << std::endl;
+        stbi_image_free(data);
+    }
+    else if (strcmp("*0", path) == 0) {
+        std::cout << "Path este *0" << std::endl;
         stbi_image_free(data);
     }
     else 
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        std::cout << "Textura nu a putut fi incarcata din path-ul: " << path << std::endl;
         stbi_image_free(data);
     }
 
