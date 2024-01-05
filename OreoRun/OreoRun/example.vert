@@ -17,5 +17,5 @@ vec4 inPosition = vec4(in_Position, 1.0);
 void main ()
 {
    gl_Position = projection * view * inPosition;
-   ex_Color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+   ex_Color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }

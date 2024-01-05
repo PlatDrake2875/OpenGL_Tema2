@@ -18,9 +18,9 @@ GLuint projectionLocation, viewLocation;
 
 float width = 800, height = 600, znear = 1, fov = 30;
 
-float Refx = 0.0f, Refy = 0.0f, Refz = 0.0f;
 float alpha = 0.0f, beta = 0.0f, dist = 30.f;
 float Obsx = 100.f, Obsy = -38, Obsz = 50.f;
+float Refx = Obsx, Refy = Obsy, Refz = 0.0f;
 float Vx = 0.0f, Vy = 0.0f, Vz = -1.0f;
 float incr_alpha1 = 0.01f, incr_alpha2 = 0.01f;
 
@@ -49,7 +49,7 @@ void RenderFunction(void)
 	Model oreo("models/oreo_1/oreo.obj");
 	oreo.Draw(shader);
 
-	// glutSwapBuffers();
+	 glutSwapBuffers();
 	glFlush();
 }
 
@@ -57,9 +57,9 @@ void RenderFunction(void)
 int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-	glutInitWindowPosition(100, 100); // pozitia initiala a ferestrei
-	glutInitWindowSize(600, 600); //dimensiunile ferestrei
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowPosition(50, 50); // pozitia initiala a ferestrei
+	glutInitWindowSize(1280, 720); //dimensiunile ferestrei
 	glutCreateWindow("Oreo Run"); // titlul ferestrei
 	glewInit(); // nu uitati de initializare glew; trebuie initializat inainte de a a initializa desenarea
 	Initialize(); // apelam functia de initializare
