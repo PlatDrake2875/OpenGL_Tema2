@@ -34,25 +34,11 @@ void Camera::ProcessSpecialKeys(int key, int xx, int yy)
 			break;
 		case GLUT_KEY_UP:
 			alpha += incr_alpha1;
-			if (abs(alpha - Constants::PI / 2) < 0.05)
-			{
-				incr_alpha1 = 0.f;
-			}
-			else
-			{
-				incr_alpha1 = 0.1f;
-			}
+			incr_alpha2 = abs(alpha + Constants::PI / 2) < 0.05 ? 0.f : 0.1f;
 			break;
 		case GLUT_KEY_DOWN:
 			alpha -= incr_alpha2;
-			if (abs(alpha + Constants::PI / 2) < 0.05)
-			{
-				incr_alpha2 = 0.f;
-			}
-			else
-			{
-				incr_alpha2 = 0.1f;
-			}
+			incr_alpha2 = abs(alpha + Constants::PI / 2) < 0.05 ? 0.f : 0.1f;
 			break;
 	}
 }
