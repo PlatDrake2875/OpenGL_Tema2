@@ -1,20 +1,21 @@
 // Oreo race
 // Codul sursa este adaptat dupa OpenGLBook.com
 
-#include <windows.h>  // biblioteci care urmeaza sa fie incluse
-#include <stdlib.h> // necesare pentru citirea shader-elor
-#include <stdio.h>
-#include <GL/glew.h> // glew apare inainte de freeglut
-#include <GL/freeglut.h> // nu trebuie uitat freeglut.h
-#include "loadShaders.h"
-#include "Model.h"
-#include "LevelLoader.h"
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
+#include "Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
-#include "Camera.h"
+#include "LevelLoader.h"
+#include "loadShaders.h"
+#include "Model.h"
+#include "ModelTransform.h"
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <GL/freeglut.h> // nu trebuie uitat freeglut.h
+#include <GL/glew.h> // glew apare inainte de freeglut
+#include <stdio.h>
+#include <stdlib.h> // necesare pentru citirea shader-elor
+#include <windows.h>  // biblioteci care urmeaza sa fie incluse
 
 int winWidth = 1280, winHeight = 720;
 GLuint projectionLocation, viewLocation;
@@ -22,6 +23,7 @@ GLuint projectionLocation, viewLocation;
 Shader* shader;
 LevelLoader lloader;
 Camera* camera;
+ModelTransform transformer;
 
 void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
 {
@@ -51,12 +53,16 @@ void Initialize(void)
 	projectionLocation = shader->getUniformLocation("projection");
 	viewLocation = shader->getUniformLocation("view");
 
-	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
+	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de fundal a ecranului
 	
 	lloader.loadModels();
 
 	// initiem camera
-	camera = new Camera(glm::vec3(0.f, 0.f, 300.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, -1.f), winWidth, winHeight);
+	camera = new Camera(glm::vec3(0.f, 0.f, 300.f),
+						glm::vec3(0.f, 0.f, 0.f),
+						glm::vec3(0.f, 0.f, -1.f),
+						winWidth,
+						winHeight);
 }
 
 void Cleanup(void)
@@ -75,8 +81,10 @@ void RenderFunction(void)
 	glm::mat4 projection = camera->getProjectionMatrix();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
 
-	lloader.drawModels(shader);
+	glm::vec3 dir(1.0f, 1.0f, 1.0f);
 
+	transformer.translateModel(lloader.getModel(0), dir);				
+	lloader.drawModels(shader);
 	camera->updateCamera();
 
 	glutSwapBuffers();

@@ -1,12 +1,12 @@
 #pragma once
 
 #include "Mesh.h"
-#include <vector>
-#include <iostream>
-#include <assimp/scene.h>
+#include "stb_image.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-#include "stb_image.h"
+#include <assimp/scene.h>
+#include <iostream>
+#include <vector>
 
 unsigned int TextureFromFile(const char* path, const std::string& directory);
 
@@ -21,8 +21,25 @@ public:
 
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool gamma = false);
+    Model() : gammaCorrection(false) {
+    }
+    Model(const Model& other)
+        : textures_loaded(other.textures_loaded),
+        meshes(other.meshes),
+        directory(other.directory),
+        gammaCorrection(other.gammaCorrection) {
+    }
+    Model& operator=(const Model& other);
 
+    // DRAW METHOD
     void Draw(Shader& shader);
+
+    // UTIL METHODS
+    std::vector<std::vector<Vertex>> GetVerticesOfEachMesh() const;
+
+    // SETTERS
+    void setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices);
+
 
 private:
     void loadModel(std::string const& path);

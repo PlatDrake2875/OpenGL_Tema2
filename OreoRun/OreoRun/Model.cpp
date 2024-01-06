@@ -6,11 +6,43 @@ Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma)
     loadModel(path);
 }
 
+Model& Model::operator=(const Model& other) {
+    if (this != &other) { 
+
+        textures_loaded = other.textures_loaded;
+        meshes = other.meshes;
+        directory = other.directory;
+        gammaCorrection = other.gammaCorrection;
+
+    }
+    return *this; 
+}
+
 void Model::Draw(Shader& shader)
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
 }
+
+std::vector<std::vector<Vertex>> Model::GetVerticesOfEachMesh() const {
+    std::vector<std::vector<Vertex>> allVertices;
+    for (const auto& mesh : meshes) {
+        allVertices.push_back(mesh.vertices);
+    }
+    return allVertices;
+}
+
+void Model::setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices) {
+    if (meshes.size() != newMeshesVertices.size()) {
+        std::cerr << "Error: Mismatch in number of meshes and vertex sets provided." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < meshes.size(); ++i) {
+        meshes[i].setVertices(newMeshesVertices[i]);
+    }
+}
+
 
 void Model::loadModel(std::string const& path)
 {
