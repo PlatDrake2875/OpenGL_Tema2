@@ -5,4 +5,4 @@ Also, this project is the labor of a fever dream one of us had a couple of weeks
 
 ---
 
-Check out our [Wiki](https://github.com/PlatDrake2875/OpenGL_Tema2/wiki) (WIP) to see the documentation!
+For documentation, check out our [Wiki](https://github.com/PlatDrake2875/OpenGL_Tema2/wiki) (WIP)! 
