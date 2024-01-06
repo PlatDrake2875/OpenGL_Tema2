@@ -1,5 +1,8 @@
 #include "Camera.h"
 
+const float Camera::minDist = 50.f;
+const float Camera::maxDist = 300.f;
+
 Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight) {
 	this->cameraPos = glm::vec3(cameraPos);
 	this->watchPoint = glm::vec3(watchPoint);
@@ -8,44 +11,71 @@ Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const gl
 	this->height = winHeight;
 }
 
-void Camera::ProcessNormalKeys(unsigned char key, int x, int y)
-{
-	switch (key) {			
-		case '-':
-			dist -= 5.0;
-			break;
-		case '+':
-			dist += 5.0;
-			break;
-	}
-	if (key == 27)
-		exit(0);
-}
-
 void Camera::ProcessSpecialKeys(int key, int xx, int yy)
 {
-	switch (key)
+	
+}
+
+void Camera::mouseWheelFunction(int button, int dir, int x, int y)
+{
+	
+	if (dir > 0 && dist > minDist)
 	{
-		case GLUT_KEY_LEFT:
-			beta -= 0.1f;
-			break;
-		case GLUT_KEY_RIGHT:
-			beta += 0.1f;
-			break;
-		case GLUT_KEY_UP:
-			alpha += incr_alpha1;
-			incr_alpha2 = abs(alpha + Constants::PI / 2) < 0.05 ? 0.f : 0.1f;
-			break;
-		case GLUT_KEY_DOWN:
-			alpha -= incr_alpha2;
-			incr_alpha2 = abs(alpha + Constants::PI / 2) < 0.05 ? 0.f : 0.1f;
-			break;
+		dist -= 5.0;
+	}
+	else if(dir < 0 && dist < maxDist)
+	{
+		dist += 5.0;
 	}
 }
 
 void Camera::setPosition(const glm::vec3& newPos)
 {
 	this->cameraPos = glm::vec3(newPos);
+}
+
+void Camera::mouseMotionFunction(int x, int y)
+{
+	// calculam diferenta de coordonate ale mouse-ului de la ultima apelare
+	int deltaX = x - lastMouseX;
+	int deltaY = y - lastMouseY;
+
+	bool edgeCaseX = false;
+	bool edgeCaseY = false;
+
+	if (x <= 1 || x >= WindowInfo::winWidth - 1) {
+		glutWarpPointer(WindowInfo::centerX(), y);
+
+		// salvam noile coordonate ale mouse-ului
+		lastMouseX = WindowInfo::centerX();
+		lastMouseY = y;
+
+		edgeCaseX = true;
+	}
+
+	if (y <= 50 || y >= WindowInfo::winHeight - 50) { // 50 este un safety margin pentru a nu da de situatii ciudate
+		glutWarpPointer(x, WindowInfo::centerY());
+
+		lastMouseX = x;
+		lastMouseY = WindowInfo::centerY();
+
+		edgeCaseY = true;
+	}
+
+	// actualizam unghiurile de rotatie ale camerei si salvam noile pozitii ale mouse-ului
+	if (!edgeCaseX) {
+		beta += deltaX * betaSensitivity;
+		lastMouseX = x;
+	}
+		
+	if (!edgeCaseY) {
+		float newAlpha = alpha + deltaY * alphaSensitivity;
+		if (newAlpha > 0.1 && newAlpha < Constants::PI / 2 - 0.1)
+		{
+			alpha = newAlpha;
+			lastMouseY = y;
+		}
+	}
 }
 
 void Camera::setWatchPoint(const glm::vec3& newWatchPoint)

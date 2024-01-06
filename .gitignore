@@ -4,8 +4,9 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 
-# Unwanted models atm
-broken_models/
+# Models will be sent via drive (because they are too large for github)
+models/
+!/models/oreo_4/
 
 # User-specific files
 *.rsuser

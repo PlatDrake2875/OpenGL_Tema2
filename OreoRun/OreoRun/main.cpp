@@ -14,34 +14,19 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "Camera.h"
+#include "WindowInfo.h"
+#include "PlayerInteraction.h"
 
-int winWidth = 1280, winHeight = 720;
-GLuint projectionLocation, viewLocation;
+GLuint projectionLocation, viewLocation, modelLocation;
 
 Shader* shader;
 Model* oreo;
 Camera* camera;
-
-void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
-{
-	glViewport(0, 0, newWidth, newHeight);
-	winWidth = newWidth;
-	winHeight = newHeight;
-	camera->setViewWidthAndHeight(newWidth, newHeight);
-}
-
-void ProcessSpecialKeys(int key, int xx, int yy)
-{
-	camera->ProcessSpecialKeys(key, xx, yy);
-}
-
-void ProcessNormalKeys(unsigned char key, int x, int y)
-{
-	camera->ProcessNormalKeys(key, x, y);
-}
+Model* skybox;
 
 void CreateModels() {
-	oreo = new Model("models/oreo_4/oreo_4.gltf");
+	skybox = new Model("skyboxes/skybox_1/scene.gltf");
+	oreo = new Model("models/oreo_4/scene.gltf");
 }
 
 void DestroyModels() {
@@ -56,13 +41,23 @@ void Initialize(void)
 	// se obtin locatiile matricilor relativ la shaderul curent
 	projectionLocation = shader->getUniformLocation("projection");
 	viewLocation = shader->getUniformLocation("view");
+	modelLocation = shader->getUniformLocation("model");
 
 	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
 
 	CreateModels(); // initializam modelele 3d
 	
 	// initiem camera
-	camera = new Camera(glm::vec3(0.f, 0.f, 300.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, -1.f), winWidth, winHeight);
+	camera = new Camera(
+		glm::vec3(0.f, 0.f, 300.f), 
+		glm::vec3(0.f, 0.f, 0.f), 
+		glm::vec3(0.f, 0.f, -1.f), 
+		WindowInfo::winWidth, 
+		WindowInfo::winHeight
+	);
+
+	// setam camera din PlayerInteraction
+	PlayerInteraction::camera = camera;
 }
 
 void Cleanup(void)
@@ -82,7 +77,17 @@ void RenderFunction(void)
 	glm::mat4 projection = camera->getProjectionMatrix();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
 
+
+	glm::mat4 model = glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &model[0][0]);
+
 	oreo->Draw(*shader);
+
+	model = glm::scale(glm::vec3(1000.f, 1000.f, 1000.f));
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &model[0][0]);
+
+	skybox->Draw(*shader);
+	
 	camera->updateCamera();
 
 	glutSwapBuffers();
@@ -95,15 +100,20 @@ int main(int argc, char* argv[])
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowPosition(50, 50); 
-	glutInitWindowSize(winWidth, winHeight); 
+	glutInitWindowSize(WindowInfo::winWidth, WindowInfo::winHeight);
 	glutCreateWindow("Oreo Run"); 
-	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALTA FUNCTIE DIN GLEW (SAU GL)
+	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALT`A FUNCTIE DIN GLEW (SAU GL)
 	Initialize(); 
-	glutReshapeFunc(ReshapeWindowFunction);
+	glutReshapeFunc(PlayerInteraction::ReshapeWindowFunction);
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);
-	glutKeyboardFunc(ProcessNormalKeys);
-	glutSpecialFunc(ProcessSpecialKeys);
+	glutMouseFunc(PlayerInteraction::HandleMouseClick);
+	glutKeyboardFunc(PlayerInteraction::ProcessNormalKeys);
+	glutSpecialFunc(PlayerInteraction::ProcessSpecialKeys);
+	glutMouseWheelFunc(PlayerInteraction::MouseWheelFunction);
+	glutPassiveMotionFunc(PlayerInteraction::MouseMotionFunction);
+	glutMotionFunc(PlayerInteraction::MouseMotionFunction);
+	glutSetCursor(GLUT_CURSOR_NONE);
 	glutCloseFunc(Cleanup);
 	glutMainLoop();
 
