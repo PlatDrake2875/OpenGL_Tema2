@@ -1,7 +1,6 @@
 #include "Model.h"
 
 
-
 Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma)
 {
     loadModel(path);
@@ -150,6 +149,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         {   // daca textura nu a mai fost incarcata pana acum, o incarcam
             Texture texture;
             texture.id = TextureFromFile(str.C_Str(), this->directory);
+            std::cout << str.C_Str() << '\n';
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);

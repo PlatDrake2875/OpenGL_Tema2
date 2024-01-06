@@ -8,6 +8,7 @@
 #include <GL/freeglut.h> // nu trebuie uitat freeglut.h
 #include "loadShaders.h"
 #include "Model.h"
+#include "LevelLoader.h"
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
@@ -19,7 +20,7 @@ int winWidth = 1280, winHeight = 720;
 GLuint projectionLocation, viewLocation;
 
 Shader* shader;
-Model* oreo;
+LevelLoader lloader;
 Camera* camera;
 
 void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
@@ -40,13 +41,6 @@ void ProcessNormalKeys(unsigned char key, int x, int y)
 	camera->ProcessNormalKeys(key, x, y);
 }
 
-void CreateModels() {
-	oreo = new Model("models/oreo_4/oreo_4.gltf");
-}
-
-void DestroyModels() {
-	delete oreo;
-}
 
 void Initialize(void)
 {
@@ -58,16 +52,15 @@ void Initialize(void)
 	viewLocation = shader->getUniformLocation("view");
 
 	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
-
-	CreateModels(); // initializam modelele 3d
 	
+	lloader.loadModels();
+
 	// initiem camera
 	camera = new Camera(glm::vec3(0.f, 0.f, 300.f), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, -1.f), winWidth, winHeight);
 }
 
 void Cleanup(void)
 {
-	DestroyModels();	// distruge modelele incarcate
 	delete shader;		// sterge obiectul shader
 }
 
@@ -82,7 +75,8 @@ void RenderFunction(void)
 	glm::mat4 projection = camera->getProjectionMatrix();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
 
-	oreo->Draw(*shader);
+	lloader.drawModels(shader);
+
 	camera->updateCamera();
 
 	glutSwapBuffers();
