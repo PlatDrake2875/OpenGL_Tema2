@@ -1,18 +1,18 @@
 // Oreo race
 // Codul sursa este adaptat dupa OpenGLBook.com
 
+
+#include <GL/glew.h> // glew apare inainte de freeglut
+#include <GL/freeglut.h> // nu trebuie uitat freeglut.h
 #include "Camera.h"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
 #include "LevelLoader.h"
 #include "loadShaders.h"
 #include "Model.h"
-#include "ModelTransform.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <GL/freeglut.h> // nu trebuie uitat freeglut.h
-#include <GL/glew.h> // glew apare inainte de freeglut
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 #include <stdio.h>
 #include <stdlib.h> // necesare pentru citirea shader-elor
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
@@ -23,7 +23,6 @@ GLuint projectionLocation, viewLocation;
 Shader* shader;
 LevelLoader lloader;
 Camera* camera;
-ModelTransform transformer;
 
 void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
 {
@@ -53,7 +52,7 @@ void Initialize(void)
 	projectionLocation = shader->getUniformLocation("projection");
 	viewLocation = shader->getUniformLocation("view");
 
-	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de fundal a ecranului
+	glClearColor(0.15f, 0.f, 0.5f, 1.f); // culoarea de fundal a ecranului
 	
 	lloader.loadModels();
 
@@ -83,7 +82,10 @@ void RenderFunction(void)
 
 	glm::vec3 dir(1.0f, 1.0f, 1.0f);
 
-	transformer.translateModel(lloader.getModel(0), dir);				
+	// Sandbox
+	lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
+	lloader.translateModel(0, dir);
+	//lloader.scaleModel(1, 1.01f);
 	lloader.drawModels(shader);
 	camera->updateCamera();
 

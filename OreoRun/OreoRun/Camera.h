@@ -15,7 +15,7 @@ private:
 	float zNear = 1.f, width, height, fov = 30.f;
 
 public:
-	Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight);
+	Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, GLint winWidth, GLint winHeight);
 	void ProcessNormalKeys(unsigned char key, int x, int y);
 	void ProcessSpecialKeys(int key, int xx, int yy);
 	void setPosition(const glm::vec3& newPos);

@@ -24,6 +24,10 @@ void Model::Draw(Shader& shader)
         meshes[i].Draw(shader);
 }
 
+/// <summary>
+/// Getter of all mesh vertices
+/// </summary>
+/// <returns></returns>
 std::vector<std::vector<Vertex>> Model::GetVerticesOfEachMesh() const {
     std::vector<std::vector<Vertex>> allVertices;
     for (const auto& mesh : meshes) {
@@ -32,6 +36,10 @@ std::vector<std::vector<Vertex>> Model::GetVerticesOfEachMesh() const {
     return allVertices;
 }
 
+/// <summary>
+/// Setter of all mesh vertices
+/// </summary>
+/// <param name="newMeshesVertices"></param>
 void Model::setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices) {
     if (meshes.size() != newMeshesVertices.size()) {
         std::cerr << "Error: Mismatch in number of meshes and vertex sets provided." << std::endl;
@@ -41,6 +49,94 @@ void Model::setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesV
     for (size_t i = 0; i < meshes.size(); ++i) {
         meshes[i].setVertices(newMeshesVertices[i]);
     }
+}
+
+/// <summary>
+/// Translates model using the dir vector
+/// </summary>
+/// <param name="dir">direction vector</param>
+void Model::translate(glm::vec3 dir)
+{
+    verticesList modelVertices = GetVerticesOfEachMesh();
+    glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), dir); // Create translation matrix once
+
+    for (auto& meshVertices : modelVertices)
+    {
+        for (auto& vertex : meshVertices)
+        {
+            glm::vec4 pos = glm::vec4(vertex.Position, 1.0f); // Convert to 4D vector for matrix multiplication
+            vertex.Position = glm::vec3(translationMatrix * pos); // Apply translation and convert back to 3D vector
+        }
+    }
+    setMeshesVertices(modelVertices);
+}
+
+/// <summary>
+/// Rotation method for a model using quaternions
+/// </summary>
+/// <param name="deg"> degrees (0-360) </param>
+/// <param name="dir"> direction vector </param>
+void Model::rotate(GLfloat deg, glm::vec3 dir)
+{
+    glm::quat myQuaternion = glm::angleAxis(glm::radians(deg), dir);
+    glm::mat4 rotationMatrix = glm::toMat4(myQuaternion);
+
+    glm::vec3 modelCenter = calculateModelCenter(); 
+
+    verticesList modelVertices = GetVerticesOfEachMesh();
+
+    for (auto& meshVertices : modelVertices)
+    {
+        for (auto& vertex : meshVertices)
+        {
+            // Translate vertex back to origin, rotate, then translate back
+            glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), -modelCenter);
+            modelMatrix *= rotationMatrix;
+            modelMatrix = glm::translate(modelMatrix, modelCenter);
+
+            // Apply transformation to vertex
+            glm::vec4 pos = glm::vec4(vertex.Position, 1.0f); // Convert to 4D vector for matrix multiplication
+            vertex.Position = glm::vec3(modelMatrix * pos); // Convert back to 3D vector
+        }
+    }
+
+    setMeshesVertices(modelVertices);
+}
+
+
+void Model::scale(GLfloat scaleFactor)
+{
+    verticesList modelVertices = GetVerticesOfEachMesh();
+    for (auto& meshVertices : modelVertices)
+    {
+        for (auto& vertex : meshVertices)
+        {
+            vertex.Position *= scaleFactor;
+        }
+    }
+    setMeshesVertices(modelVertices);
+}
+
+/// <summary>
+/// Computes the center point of a model
+/// </summary>
+/// <returns></returns>
+glm::vec3 Model::calculateModelCenter() const {
+    glm::vec3 sum(0.0f, 0.0f, 0.0f);
+    int totalVertices = 0;
+
+    for (const auto& mesh : meshes) {
+        for (const auto& vertex : mesh.vertices) {
+            sum += vertex.Position;
+        }
+        totalVertices += mesh.vertices.size();
+    }
+
+    if (totalVertices > 0) {
+        sum /= static_cast<float>(totalVertices);
+    }
+
+    return sum;
 }
 
 
@@ -204,7 +300,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
-        GLenum format;
+        GLenum format{};
         if (nrComponents == 1)
             format = GL_RED;
         else if (nrComponents == 3)

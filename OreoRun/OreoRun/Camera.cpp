@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight) {
+Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, GLint winWidth, GLint winHeight) {
 	this->cameraPos = glm::vec3(cameraPos);
 	this->watchPoint = glm::vec3(watchPoint);
 	this->vertical = glm::vec3(vertical);

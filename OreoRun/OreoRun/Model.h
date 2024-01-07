@@ -7,6 +7,11 @@
 #include <assimp/scene.h>
 #include <iostream>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
+using verticesList = std::vector<std::vector<Vertex>>;
 
 unsigned int TextureFromFile(const char* path, const std::string& directory);
 
@@ -26,7 +31,7 @@ public:
     Model(const Model& other)
         : textures_loaded(other.textures_loaded),
         meshes(other.meshes),
-        directory(other.directory),
+        directory(other.directory), 
         gammaCorrection(other.gammaCorrection) {
     }
     Model& operator=(const Model& other);
@@ -34,12 +39,19 @@ public:
     // DRAW METHOD
     void Draw(Shader& shader);
 
-    // UTIL METHODS
+    // GETTERS
     std::vector<std::vector<Vertex>> GetVerticesOfEachMesh() const;
-
+    
     // SETTERS
     void setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices);
 
+    // TRANSFORMATIONS
+    void translate(glm::vec3 dir);
+    void rotate(GLfloat deg, glm::vec3 dir);
+    void scale(GLfloat scaleFactor);
+
+    // UTIL METHODS
+    glm::vec3 calculateModelCenter() const;
 
 private:
     void loadModel(std::string const& path);
