@@ -10,6 +10,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using verticesList = std::vector<std::vector<Vertex>>;
 
@@ -17,22 +18,23 @@ unsigned int TextureFromFile(const char* path, const std::string& directory);
 
 class Model
 {
-public:
+    GLuint shaderProgram;
     // datele modelului
     std::vector<Texture> textures_loaded;	// retine texturile incarcate, pentru a nu se incarca de mai multe ori aceeasi
     std::vector<Mesh> meshes;
     std::string directory;
     bool gammaCorrection;
-
+public:
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool gamma = false);
-    Model() : gammaCorrection(false) {
+    Model() : gammaCorrection(false), shaderProgram(0) {
     }
     Model(const Model& other)
         : textures_loaded(other.textures_loaded),
         meshes(other.meshes),
         directory(other.directory), 
-        gammaCorrection(other.gammaCorrection) {
+        gammaCorrection(other.gammaCorrection),
+        shaderProgram(other.shaderProgram) {
     }
     Model& operator=(const Model& other);
 
@@ -44,6 +46,7 @@ public:
     
     // SETTERS
     void setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices);
+    void setShaderProgram(GLuint program) { shaderProgram = program; }
 
     // TRANSFORMATIONS
     void translate(glm::vec3 dir);

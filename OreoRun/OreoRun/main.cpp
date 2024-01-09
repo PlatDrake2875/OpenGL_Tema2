@@ -16,13 +16,30 @@
 #include <stdio.h>
 #include <stdlib.h> // necesare pentru citirea shader-elor
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
+#include "PlayerMovement.h"
 
 int winWidth = 1280, winHeight = 720;
 GLuint projectionLocation, viewLocation;
 
+int nbFrames = 0;
+double lastTime;
+
 Shader* shader;
 LevelLoader lloader;
 Camera* camera;
+PlayerMovement* playerMov = new PlayerMovement();
+
+void displayFPS(int value) {
+	double currentTime = glutGet(GLUT_ELAPSED_TIME);
+	nbFrames++;
+	if (currentTime - lastTime >= 1000.0) { // If last print was more than 1 sec ago
+		std::cout << nbFrames << " FPS\n";
+		nbFrames = 0;
+		lastTime += 1000.0;
+	}
+	glutTimerFunc(100, displayFPS, 0); // Re-register the timer for the next call
+}
+
 
 void ReshapeWindowFunction(GLint newWidth, GLint newHeight)
 {
@@ -40,6 +57,7 @@ void ProcessSpecialKeys(int key, int xx, int yy)
 void ProcessNormalKeys(unsigned char key, int x, int y)
 {
 	camera->ProcessNormalKeys(key, x, y);
+	playerMov->ProcessNormalKeys(key, x, y);
 }
 
 
@@ -54,7 +72,7 @@ void Initialize(void)
 
 	glClearColor(0.15f, 0.f, 0.5f, 1.f); // culoarea de fundal a ecranului
 	
-	lloader.loadModels();
+	lloader.loadModels(shader);
 
 	// initiem camera
 	camera = new Camera(glm::vec3(0.f, 0.f, 300.f),
@@ -83,8 +101,10 @@ void RenderFunction(void)
 	glm::vec3 dir(1.0f, 1.0f, 1.0f);
 
 	// Sandbox
-	lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
-	lloader.translateModel(0, dir);
+	playerMov->setPlayer(lloader.getModel(0));
+	lloader.setModel(0, playerMov->getPlayer());
+	//lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
+	//lloader.translateModel(0, dir);
 	//lloader.scaleModel(1, 1.01f);
 	lloader.drawModels(shader);
 	camera->updateCamera();
@@ -100,9 +120,14 @@ int main(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowPosition(50, 50); 
 	glutInitWindowSize(winWidth, winHeight); 
+	
 	glutCreateWindow("Oreo Run"); 
+	
 	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALTA FUNCTIE DIN GLEW (SAU GL)
+	
 	Initialize(); 
+	lastTime = glutGet(GLUT_ELAPSED_TIME);
+	glutTimerFunc(100, displayFPS, 0); // Register the timer callback
 	glutReshapeFunc(ReshapeWindowFunction);
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);

@@ -70,7 +70,7 @@ void Camera::setZNear(float newZNear)
 	this->zNear = zNear;
 }
 
-void Camera::setViewWidthAndHeight(float newWidth, float newHeight)
+void Camera::setViewWidthAndHeight(GLint newWidth, GLint newHeight)
 {
 	this->width = newWidth;
 	this->height = newHeight;
@@ -81,7 +81,7 @@ void Camera::setFOV(float)
 	this->fov = fov;
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
 	return glm::lookAt(cameraPos, watchPoint, vertical);
 }
