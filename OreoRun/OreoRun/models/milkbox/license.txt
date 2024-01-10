@@ -1,0 +1,11 @@
+Model Information:
+* title:	Carton of Milk - Milkbox
+* source:	https://sketchfab.com/3d-models/carton-of-milk-milkbox-0979139810bf44068470637ed33457f7
+* author:	estelacasitorojo (https://sketchfab.com/estelacasitorojo)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Carton of Milk - Milkbox" (https://sketchfab.com/3d-models/carton-of-milk-milkbox-0979139810bf44068470637ed33457f7) by estelacasitorojo (https://sketchfab.com/estelacasitorojo) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

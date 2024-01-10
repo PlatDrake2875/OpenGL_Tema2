@@ -4,6 +4,7 @@
 class PlayerMovement {
 	Model* player;
 	glm::vec3 dir;
+	glm::vec3 quaternionDir;
 
 public:
 	// CONSTRUCTORS & DESTRUCTORS

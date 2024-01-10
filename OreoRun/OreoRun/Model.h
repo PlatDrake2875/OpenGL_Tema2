@@ -19,6 +19,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory);
 class Model
 {
     GLuint shaderProgram;
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
     // datele modelului
     std::vector<Texture> textures_loaded;	// retine texturile incarcate, pentru a nu se incarca de mai multe ori aceeasi
     std::vector<Mesh> meshes;
@@ -47,6 +48,7 @@ public:
     // SETTERS
     void setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesVertices);
     void setShaderProgram(GLuint program) { shaderProgram = program; }
+    void updateModelMatrix();
 
     // TRANSFORMATIONS
     void translate(glm::vec3 dir);

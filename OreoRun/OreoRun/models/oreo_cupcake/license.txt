@@ -1,0 +1,11 @@
+Model Information:
+* title:	Oreo Cupcake
+* source:	https://sketchfab.com/3d-models/oreo-cupcake-142dc666e43045dc82e4ddbf58b0d381
+* author:	Mustafa Duyar (https://sketchfab.com/mustafaduyar)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Oreo Cupcake" (https://sketchfab.com/3d-models/oreo-cupcake-142dc666e43045dc82e4ddbf58b0d381) by Mustafa Duyar (https://sketchfab.com/mustafaduyar) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

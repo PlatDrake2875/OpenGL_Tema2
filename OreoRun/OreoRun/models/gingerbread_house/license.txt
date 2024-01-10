@@ -1,0 +1,11 @@
+Model Information:
+* title:	Gingerbread House!
+* source:	https://sketchfab.com/3d-models/gingerbread-house-03b00c2e279645cf918206daa380d8bb
+* author:	Joakim Hjelm (https://sketchfab.com/joakim_hjelm)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Gingerbread House!" (https://sketchfab.com/3d-models/gingerbread-house-03b00c2e279645cf918206daa380d8bb) by Joakim Hjelm (https://sketchfab.com/joakim_hjelm) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

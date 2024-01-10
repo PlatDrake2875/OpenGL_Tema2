@@ -13,13 +13,13 @@ Model& Model::operator=(const Model& other) {
 		meshes = other.meshes;
 		directory = other.directory;
 		gammaCorrection = other.gammaCorrection;
-
 	}
 	return *this;
 }
 
 void Model::Draw(Shader& shader) {
 	shader.use(); // Activate the shader program
+	updateModelMatrix(); // Update the shader with the latest model matrix
 	for (unsigned int i = 0; i < meshes.size(); i++) {
 		meshes[i].Draw(shader);
 	}
@@ -53,16 +53,23 @@ void Model::setMeshesVertices(const std::vector<std::vector<Vertex>>& newMeshesV
 	}
 }
 
+void Model::updateModelMatrix() {
+	// Get the location of the 'model' uniform in the shader
+	GLuint modelMatrixLocation = glGetUniformLocation(shaderProgram, "model");
+
+	// Update the 'model' uniform in the shader with the current modelMatrix
+	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(modelMatrix));
+}
+
 /// <summary>
 /// Translates model using the dir vector
 /// </summary>
 /// <param name="dir">direction vector</param>
 void Model::translate(glm::vec3 dir) {
-	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), dir);
-
-	GLuint modelMatrixLocation = glGetUniformLocation(shaderProgram, "model");
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(translationMatrix));
+	modelMatrix = glm::translate(modelMatrix, dir); // Update the model matrix
+	updateModelMatrix();
 }
+
 
 /// <summary>
 /// Rotation method for a model using quaternions
@@ -72,25 +79,24 @@ void Model::translate(glm::vec3 dir) {
 void Model::rotate(GLfloat deg, glm::vec3 dir) {
 	glm::vec3 modelCenter = calculateModelCenter();
 
-	glm::mat4 translateToOrigin = glm::translate(glm::mat4(1.0f), -modelCenter);
-	glm::quat myQuat = glm::angleAxis(glm::radians(deg), dir);
-	glm::mat4 rotationMatrix = glm::toMat4(myQuat);
+	glm::mat4 translateToCenter = glm::translate(glm::mat4(1.0f), -modelCenter);
+
+	glm::quat quaternion = glm::angleAxis(glm::radians(deg), dir);
+	glm::mat4 rotationMatrix = glm::toMat4(quaternion);
+
 	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), modelCenter);
 
-	glm::mat4 combinedMatrix = translateBack * rotationMatrix * translateToOrigin;
+	modelMatrix = translateBack * rotationMatrix * translateToCenter * modelMatrix;
 
-	GLuint modelMatrixLocation = glGetUniformLocation(shaderProgram, "model");
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(combinedMatrix));
+	updateModelMatrix();
 }
 
 
 
+
 void Model::scale(GLfloat scaleFactor) {
-	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scaleFactor));
-
-
-	GLuint modelMatrixLocation = glGetUniformLocation(shaderProgram, "model");
-	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(scaleMatrix));
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(scaleFactor, scaleFactor, scaleFactor)); // Update the model matrix
+	updateModelMatrix();
 }
 
 /// <summary>
