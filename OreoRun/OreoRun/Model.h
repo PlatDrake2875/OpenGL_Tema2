@@ -20,6 +20,7 @@ class Model
 {
     GLuint shaderProgram;
     glm::mat4 modelMatrix = glm::mat4(1.0f);
+    glm::quat cumulativeRotation;
     // datele modelului
     std::vector<Texture> textures_loaded;	// retine texturile incarcate, pentru a nu se incarca de mai multe ori aceeasi
     std::vector<Mesh> meshes;
@@ -28,14 +29,15 @@ class Model
 public:
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool gamma = false);
-    Model() : gammaCorrection(false), shaderProgram(0) {
+    Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.0, 0.0, 0.0, 0.0)) {
     }
     Model(const Model& other)
         : textures_loaded(other.textures_loaded),
         meshes(other.meshes),
         directory(other.directory), 
         gammaCorrection(other.gammaCorrection),
-        shaderProgram(other.shaderProgram) {
+        shaderProgram(other.shaderProgram),
+        cumulativeRotation(other.cumulativeRotation) {
     }
     Model& operator=(const Model& other);
 

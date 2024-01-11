@@ -51,7 +51,7 @@ void LevelLoader::translateModel(int index, glm::vec3 dir)
 	models[index]->translate(dir);
 }
 
-void LevelLoader::rotateModel(int index, GLfloat deg, glm::vec3 dir)
+void LevelLoader::rotateModel(int index, GLfloat deg, glm::vec3 dir, Shader* shader)
 {
 	models[index]->rotate(deg, dir);
 }

@@ -1,4 +1,5 @@
 #include "Model.h"
+#include <glm/gtx/string_cast.hpp>
 
 
 Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma)
@@ -76,21 +77,22 @@ void Model::translate(glm::vec3 dir) {
 /// </summary>
 /// <param name="deg"> degrees (0-360) </param>
 /// <param name="dir"> direction vector </param>
-void Model::rotate(GLfloat deg, glm::vec3 dir) {
-	glm::vec3 modelCenter = calculateModelCenter();
+void Model::rotate(GLfloat deg, glm::vec3 axis) {
+	float radians = glm::radians(deg);
+	glm::quat quaternionRotation = glm::angleAxis(radians, glm::normalize(axis));
+	cumulativeRotation = quaternionRotation * cumulativeRotation;
 
-	glm::mat4 translateToCenter = glm::translate(glm::mat4(1.0f), -modelCenter);
+	// Update the model matrix with the new rotation
+	modelMatrix = modelMatrix * glm::toMat4(cumulativeRotation);
 
-	glm::quat quaternion = glm::angleAxis(glm::radians(deg), dir);
-	glm::mat4 rotationMatrix = glm::toMat4(quaternion);
+	// Reset cumulativeRotation to identity to avoid double application
+	cumulativeRotation = glm::quat(1.0, 0.0, 0.0, 0.0);
 
-	glm::mat4 translateBack = glm::translate(glm::mat4(1.0f), modelCenter);
-
-	modelMatrix = translateBack * rotationMatrix * translateToCenter * modelMatrix;
-
+	std::cerr << glm::to_string(modelMatrix) << '\n';
+	std::cerr << glm::to_string(quaternionRotation) << '\n';
 	updateModelMatrix();
-}
 
+}
 
 
 

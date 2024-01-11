@@ -23,6 +23,6 @@ public:
 
 	void scaleModel(int index, GLfloat scaleFactor);
 	void translateModel(int index, glm::vec3 dir);
-	void rotateModel(int index, GLfloat deg, glm::vec3 dir);
+	void rotateModel(int index, GLfloat deg, glm::vec3 dir, Shader* shader);
 };
 
