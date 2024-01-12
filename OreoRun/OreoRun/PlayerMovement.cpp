@@ -21,7 +21,7 @@ void PlayerMovement::ProcessNormalKeys(unsigned char key, int x, int y)
 		break;
 	case 's':
 		dir = glm::vec3(1.f, 0.f, 0.f);
-		quaternionDir = glm::vec3(1.f, 0.f, 0.f);
+		quaternionDir = glm::vec3(0.f, -1.f, 0.f);
 		break;
 	case 'a':
 		dir = glm::vec3(0.f, -1.f, 0.f);
@@ -29,7 +29,7 @@ void PlayerMovement::ProcessNormalKeys(unsigned char key, int x, int y)
 		break;
 	case 'd':
 		dir = glm::vec3(0.f, 1.f, 0.f);
-		quaternionDir = glm::vec3(1.f, 0.f, 0.f);
+		quaternionDir = glm::vec3(-1.f, 0.f, 0.f);
 		break;
 	case ' ':
 		dir = glm::vec3(0.f, 0.f, 1.f);
@@ -43,8 +43,7 @@ void PlayerMovement::ProcessNormalKeys(unsigned char key, int x, int y)
 /// </summary>
 void PlayerMovement::updatePlayerPosition()
 {
-	player->rotate(5.f, quaternionDir);	
-	player->translate(dir);
+	player->rotateThenTranslate(5.f, quaternionDir, dir);
 }
 
 

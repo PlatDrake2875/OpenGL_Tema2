@@ -1,8 +1,6 @@
 #include "Model.h"
-#include <glm/gtx/string_cast.hpp>
 
-
-Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma)
+Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f))
 {
 	loadModel(path);
 }
@@ -67,7 +65,11 @@ void Model::updateModelMatrix() {
 /// </summary>
 /// <param name="dir">direction vector</param>
 void Model::translate(glm::vec3 dir) {
-	modelMatrix = glm::translate(modelMatrix, dir); // Update the model matrix
+	/*glm::vec4 lastColumn = modelMatrix[3];
+	modelMatrix = glm::mat4(1.0f);
+	modelMatrix[3] = lastColumn;*/
+
+	modelMatrix = glm::translate(modelMatrix, dir); 
 	updateModelMatrix();
 }
 
@@ -78,28 +80,52 @@ void Model::translate(glm::vec3 dir) {
 /// <param name="deg"> degrees (0-360) </param>
 /// <param name="dir"> direction vector </param>
 void Model::rotate(GLfloat deg, glm::vec3 axis) {
+	//std::cerr << glm::to_string(modelMatrix) << '\n';
+	//std::cerr << "cum rot: " << glm::to_string(cumulativeRotation) << '\n';
+	glm::vec3 center = calculateModelCenter();
+
 	float radians = glm::radians(deg);
 	glm::quat quaternionRotation = glm::angleAxis(radians, glm::normalize(axis));
-	cumulativeRotation = quaternionRotation * cumulativeRotation;
+	//std::cerr << "quat rot: " << glm::to_string(quaternionRotation) << '\n';
 
-	// Update the model matrix with the new rotation
-	modelMatrix = modelMatrix * glm::toMat4(cumulativeRotation);
+	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
+	glm::mat4 rotationMatrix = glm::toMat4(quaternionRotation);
+	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
 
-	// Reset cumulativeRotation to identity to avoid double application
-	cumulativeRotation = glm::quat(1.0, 0.0, 0.0, 0.0);
+	//std::cerr << glm::to_string(translationToCenter) << '\n';
+	//std::cerr << glm::to_string(translationBack) << '\n';
+	//std::cerr << '\n';
 
-	std::cerr << glm::to_string(modelMatrix) << '\n';
-	std::cerr << glm::to_string(quaternionRotation) << '\n';
+	modelMatrix = translationBack * rotationMatrix * translationToCenter * modelMatrix;
+
 	updateModelMatrix();
-
 }
-
-
 
 void Model::scale(GLfloat scaleFactor) {
-	modelMatrix = glm::scale(modelMatrix, glm::vec3(scaleFactor, scaleFactor, scaleFactor)); // Update the model matrix
+	modelMatrix = glm::scale(modelMatrix, glm::vec3(scaleFactor, scaleFactor, scaleFactor)); 
 	updateModelMatrix();
 }
+
+void Model::rotateThenTranslate(GLfloat deg, glm::vec3 axis, glm::vec3 dir)
+{
+	float radians = glm::radians(deg);
+	glm::quat quaternionRotation = glm::angleAxis(radians, glm::normalize(axis));
+
+	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), dir);
+
+	glm::vec3 center = calculateModelCenter();
+	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
+	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
+
+	glm::mat4 rotationMatrix = glm::toMat4(quaternionRotation);
+
+	modelMatrix = translationMatrix * modelMatrix; // Apply translation
+	modelMatrix = translationBack * rotationMatrix * translationToCenter * modelMatrix; // Apply rotation 
+
+	std::cerr << glm::to_string(modelMatrix) << '\n';
+	updateModelMatrix();
+}
+
 
 /// <summary>
 /// Computes the center point of a model
@@ -111,7 +137,8 @@ glm::vec3 Model::calculateModelCenter() const {
 
 	for (const auto& mesh : meshes) {
 		for (const auto& vertex : mesh.vertices) {
-			sum += vertex.Position;
+			glm::vec4 transformedPosition = modelMatrix * glm::vec4(vertex.Position, 1.0f);
+			sum += glm::vec3(transformedPosition);
 		}
 		totalVertices += mesh.vertices.size();
 	}
@@ -122,7 +149,6 @@ glm::vec3 Model::calculateModelCenter() const {
 
 	return sum;
 }
-
 
 void Model::loadModel(std::string const& path)
 {
@@ -214,10 +240,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	//procesam materialele
 	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-	/*std::cout << "Numar de texturi difuze: " << material->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
-	std::cout << "Numar de texturi speculare: " << material->GetTextureCount(aiTextureType_SPECULAR) << std::endl;
-	std::cout << "Numar de texturi height: " << material->GetTextureCount(aiTextureType_HEIGHT) << std::endl;
-	std::cout << "Numar de texturi ambient: " << material->GetTextureCount(aiTextureType_AMBIENT) << std::endl;*/
 
 	// se incarca texturile diffuse
 	std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");

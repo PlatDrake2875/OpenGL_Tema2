@@ -11,6 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 using verticesList = std::vector<std::vector<Vertex>>;
 
@@ -29,7 +30,8 @@ class Model
 public:
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool gamma = false);
-    Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.0, 0.0, 0.0, 0.0)) {
+    Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f)) {
+        std::cerr << glm::to_string(cumulativeRotation) << '\n';
     }
     Model(const Model& other)
         : textures_loaded(other.textures_loaded),
@@ -56,6 +58,7 @@ public:
     void translate(glm::vec3 dir);
     void rotate(GLfloat deg, glm::vec3 dir);
     void scale(GLfloat scaleFactor);
+    void rotateThenTranslate(GLfloat deg, glm::vec3 axis, glm::vec3 dir);
 
     // UTIL METHODS
     glm::vec3 calculateModelCenter() const;
