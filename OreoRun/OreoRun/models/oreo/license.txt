@@ -1,0 +1,11 @@
+Model Information:
+* title:	OREO
+* source:	https://sketchfab.com/3d-models/oreo-31ec4bc255d8405c91e96334268b2596
+* author:	gelmi.com.br (https://sketchfab.com/rodrigogelmi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "OREO" (https://sketchfab.com/3d-models/oreo-31ec4bc255d8405c91e96334268b2596) by gelmi.com.br (https://sketchfab.com/rodrigogelmi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
