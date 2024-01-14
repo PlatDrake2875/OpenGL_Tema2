@@ -26,7 +26,7 @@ Model* skybox;
 
 void CreateModels() {
 	skybox = new Model("skyboxes/skybox_1/scene.gltf");
-	oreo = new Model("models/oreo_4/scene.gltf");
+	oreo = new Model("models/oreo/scene.gltf");
 }
 
 void DestroyModels() {
