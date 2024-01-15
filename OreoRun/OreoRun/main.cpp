@@ -17,12 +17,36 @@
 #include "WindowInfo.h"
 #include "PlayerInteraction.h"
 
-GLuint projectionLocation, viewLocation, modelLocation;
+GLuint projectionLocation, modelLocation,
+matrUmbraLocation,
+viewLocation,
+projLocation,
+matrRotlLocation,
+lightColorLocation,
+lightPosLocation,
+viewPosLocation,
+codColLocation;
 
 Shader* shader;
 Model* oreo;
 Camera* camera;
 Model* skybox;
+
+// sursa de lumina
+float xL = 500.f, yL = 100.f, zL = 400.f;
+
+// matricea umbrei
+float matrUmbra[4][4];
+
+float PI = 3.141592;
+
+// cilindrul
+float const U_MIN = 0, U_MAX = 2 * PI, V_MIN = 50, V_MAX = 150;
+// numarul de paralele/meridiane, de fapt numarul de valori ptr parametri
+int const NR_PARR = 30, NR_MERID = 30;
+// pasul cu care vom incrementa u, respectiv v
+float step_u = (U_MAX - U_MIN) / NR_PARR, step_v = (V_MAX - V_MIN) / NR_MERID;
+
 
 void CreateModels() {
 	skybox = new Model("skyboxes/skybox_1/scene.gltf");
@@ -42,6 +66,11 @@ void Initialize(void)
 	projectionLocation = shader->getUniformLocation("projection");
 	viewLocation = shader->getUniformLocation("view");
 	modelLocation = shader->getUniformLocation("model");
+
+	matrUmbraLocation = shader->getUniformLocation("matrUmbra");
+	lightColorLocation = shader->getUniformLocation("lightColor");
+	lightPosLocation = shader->getUniformLocation("lightPos");
+	viewPosLocation = shader->getUniformLocation( "viewPos");
 
 	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
 
@@ -89,6 +118,18 @@ void RenderFunction(void)
 	skybox->Draw(*shader);
 	
 	camera->updateCamera();
+
+	// matricea pentru umbra
+	float D = -0.5f;
+	matrUmbra[0][0] = zL + D; matrUmbra[0][1] = 0; matrUmbra[0][2] = 0; matrUmbra[0][3] = 0;
+	matrUmbra[1][0] = 0; matrUmbra[1][1] = zL + D; matrUmbra[1][2] = 0; matrUmbra[1][3] = 0;
+	matrUmbra[2][0] = -xL; matrUmbra[2][1] = -yL; matrUmbra[2][2] = D; matrUmbra[2][3] = -1;
+	matrUmbra[3][0] = -D * xL; matrUmbra[3][1] = -D * yL; matrUmbra[3][2] = -D * zL; matrUmbra[3][3] = zL;
+	glUniformMatrix4fv(matrUmbraLocation, 1, GL_FALSE, &matrUmbra[0][0]);
+
+	// Variabile uniforme pentru iluminare
+	glUniform3f(lightColorLocation, 1.0f, 1.0f, 1.0f);
+	glUniform3f(lightPosLocation, xL, yL, zL);
 
 	glutSwapBuffers();
 	glFlush();
