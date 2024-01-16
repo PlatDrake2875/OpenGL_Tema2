@@ -32,8 +32,9 @@ class Model
 public:
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool isSkyBox = false, const bool gamma = false);
-    Model() : gammaCorrection(false), isSkyBox(false), shaderProgram(0), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f)) {
+    Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f)) {
         std::cerr << glm::to_string(cumulativeRotation) << '\n';
+        setLighted(false);
     }
     Model(const Model& other)
         : textures_loaded(other.textures_loaded),
