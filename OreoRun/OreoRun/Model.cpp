@@ -131,12 +131,17 @@ void Model::rotateThenTranslate(GLfloat deg, glm::vec3 axis, glm::vec3 dir)
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), dir);
 
 	glm::vec3 center = calculateModelCenter();
-	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
-	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
+	//std::cerr << glm::to_string(center) << '\n';
 
+	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
+	//std::cerr << glm::to_string(translationToCenter) << '\n';
+	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
+	//std::cerr << glm::to_string(translationBack) << '\n';
 	glm::mat4 rotationMatrix = glm::toMat4(quaternionRotation);
+	std::cerr << glm::to_string(rotationMatrix) << '\n';
 
 	modelMatrix = translationMatrix * modelMatrix; // Apply translation
+	//std::cerr << glm::to_string(modelMatrix) << '\n';
 	modelMatrix = translationBack * rotationMatrix * translationToCenter * modelMatrix; // Apply rotation 
 
 	std::cerr << glm::to_string(modelMatrix) << '\n';
