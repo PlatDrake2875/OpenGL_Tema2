@@ -20,6 +20,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "PlayerMovement.h"
+#include "Plane.h"  
+
+
 
 GLuint projectionLocation, modelLocation,
 matrUmbraLocation,
@@ -39,6 +42,7 @@ LevelLoader lloader;
 Camera* camera;
 Model* skybox;
 PlayerMovement* playerMov = new PlayerMovement();
+Plane* myPlane;
 
 void displayFPS(int value) {
 	double currentTime = glutGet(GLUT_ELAPSED_TIME);
@@ -77,6 +81,13 @@ void Initialize(void)
 	
 	lloader.loadModels(shader);
 
+	PlaneVertex v1(glm::vec4(0.f, 0.f, 0.f, 1.f), glm::vec3(1.f, 0.f, 0.f), glm::vec3(0.f, 1.f, 0.f), glm::vec2(0.f, 0.f));
+	PlaneVertex v2(glm::vec4(1000.f, 0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f), glm::vec3(0.f, 1.f, 0.f), glm::vec2(1.f, 0.f));
+	PlaneVertex v3(glm::vec4(1000.f, 1000.f, 0.f, 1.f), glm::vec3(0.f, 0.f, 1.f), glm::vec3(0.f, 1.f, 0.f), glm::vec2(1.f, 1.f));
+	PlaneVertex v4(glm::vec4(0.f, 1000.f, 0.f, 1.f), glm::vec3(1.f, 1.f, 1.f), glm::vec3(0.f, 1.f, 0.f), glm::vec2(0.f, 1.f));
+
+	myPlane = new Plane(v1, v2, v3, v4);
+
 	// initiem camera
 	camera = new Camera(
 		glm::vec3(0.f, 0.f, 300.f), 
@@ -99,6 +110,7 @@ void ProcessNormalKeys(unsigned char key, int x, int y)
 
 void Cleanup(void)
 {
+	delete myPlane;
 	delete shader;		// sterge obiectul shader
 }
 
@@ -149,9 +161,11 @@ int main(int argc, char* argv[])
 	glutInitWindowSize(WindowInfo::winWidth, WindowInfo::winHeight);
 	glutCreateWindow("Oreo Run"); 
 	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALT`A FUNCTIE DIN GLEW (SAU GL)
+	
 	Initialize(); 
 	lastTime = glutGet(GLUT_ELAPSED_TIME);
 	glutTimerFunc(100, displayFPS, 0); // Register the timer callback
+
 	glutReshapeFunc(PlayerInteraction::ReshapeWindowFunction);
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);

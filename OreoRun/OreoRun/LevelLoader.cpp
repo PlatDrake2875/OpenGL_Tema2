@@ -31,6 +31,7 @@ void LevelLoader::loadModels(Shader* shader)
 	models.push_back(new Model("models/oreo/oreo_4.gltf")); // Oreo King
 	models.push_back(new Model("models/christmas_ball/scene.gltf")); // Test christmas ball
 
+	models[0]->translate(glm::vec3(5.f, 0.f, 0.f));
 	for (auto& model : models)
 		model->setShaderProgram(shader->ID);
 }
