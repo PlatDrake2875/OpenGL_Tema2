@@ -1,9 +1,10 @@
-#pragma once
+#ifndef MESH_H
+#define MESH_H
 
-#include "glm/glm.hpp"
 #include "Shader.h"
 #include <string>
 #include <vector>
+#include "glm/glm.hpp"
 
 
 struct Vertex {
@@ -38,3 +39,5 @@ private:
     // initializeaza toate buffer-ele si array-ul de atribute
     void setupMesh();
 };
+
+#endif

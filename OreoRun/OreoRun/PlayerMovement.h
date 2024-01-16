@@ -1,4 +1,6 @@
-#pragma once
+#ifndef PLAYERMOVEMENT_H
+#define PLAYERMOVEMENT_H
+
 #include "Model.h"
 
 class PlayerMovement {
@@ -22,3 +24,4 @@ public:
 	void updatePlayerPosition();
 };
 
+#endif 

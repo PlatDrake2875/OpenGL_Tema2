@@ -1,12 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
 #include <GL/freeglut.h>
 #include "Constants.h"
 #include "WindowInfo.h"
 #include <iostream>
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 
 class Camera
 {
@@ -18,8 +18,7 @@ private:
 	int lastMouseX = 0, lastMouseY = 0;
 	static const float minDist, maxDist;
 public:
-	Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight);
-	void ProcessNormalKeys(unsigned char key, int x, int y);
+	Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, GLint winWidth, GLint winHeight);
 	void ProcessSpecialKeys(int key, int xx, int yy);
 	void mouseWheelFunction(int button, int dir, int x, int y);
 	void mouseMotionFunction(int x, int y);

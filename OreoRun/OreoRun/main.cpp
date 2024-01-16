@@ -4,6 +4,7 @@
 
 #include <GL/glew.h> // glew apare inainte de freeglut
 #include <GL/freeglut.h> // nu trebuie uitat freeglut.h
+#include "PlayerInteraction.h"
 #include "Camera.h"
 #include "LevelLoader.h"
 #include "loadShaders.h"
@@ -11,14 +12,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
-#include "Camera.h"
 #include "WindowInfo.h"
 #include "PlayerInteraction.h"
 #include <stdio.h>
 #include <stdlib.h> // necesare pentru citirea shader-elor
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 #include "PlayerMovement.h"
 
 GLuint projectionLocation, modelLocation,
@@ -90,6 +90,13 @@ void Initialize(void)
 	PlayerInteraction::camera = camera;
 }
 
+void ProcessNormalKeys(unsigned char key, int x, int y)
+{
+	PlayerInteraction::ProcessNormalKeys(key, x, y);
+	if (PlayerInteraction::isPlayerInteracting)
+		playerMov->ProcessNormalKeys(key, x, y);
+}
+
 void Cleanup(void)
 {
 	delete shader;		// sterge obiectul shader
@@ -140,10 +147,8 @@ int main(int argc, char* argv[])
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowPosition(50, 50); 
 	glutInitWindowSize(WindowInfo::winWidth, WindowInfo::winHeight);
- 	glutCreateWindow("Oreo Run"); 
-	
-	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALTA FUNCTIE DIN GLEW (SAU GL)
-	
+	glutCreateWindow("Oreo Run"); 
+	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALT`A FUNCTIE DIN GLEW (SAU GL)
 	Initialize(); 
 	lastTime = glutGet(GLUT_ELAPSED_TIME);
 	glutTimerFunc(100, displayFPS, 0); // Register the timer callback
@@ -151,7 +156,7 @@ int main(int argc, char* argv[])
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);
 	glutMouseFunc(PlayerInteraction::HandleMouseClick);
-	glutKeyboardFunc(PlayerInteraction::ProcessNormalKeys);
+	glutKeyboardFunc(ProcessNormalKeys);
 	glutSpecialFunc(PlayerInteraction::ProcessSpecialKeys);
 	glutMouseWheelFunc(PlayerInteraction::MouseWheelFunction);
 	glutPassiveMotionFunc(PlayerInteraction::MouseMotionFunction);

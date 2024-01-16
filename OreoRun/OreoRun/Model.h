@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MODEL_H
+#define MODEL_H
 
 #include "Mesh.h"
 #include "stb_image.h"
@@ -28,10 +29,9 @@ class Model
     std::string directory;
     bool gammaCorrection;
     bool isLighted = true;
-
 public:
     // constructor, expects a filepath to a 3D model.
-    Model(const std::string& path, const bool isSkyBox = false, const bool gamma = false);
+    Model(const std::string& path, bool isSkyBox = false, bool gamma = false);
     Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f)) {
         std::cerr << glm::to_string(cumulativeRotation) << '\n';
         setLighted(false);
@@ -73,3 +73,5 @@ private:
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
     void setLighted(bool);  
 };
+
+#endif

@@ -1,8 +1,9 @@
-#include <glm/ext/vector_float4.hpp>
 #ifndef PLANE_H
 #define PLANE_H
 
+
 #include "SimpleShape.h"
+#include <glm/ext/vector_float4.hpp>
 
 class Plane : public SimpleShape
 {

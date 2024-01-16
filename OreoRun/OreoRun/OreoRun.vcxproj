@@ -180,12 +180,12 @@ xcopy /y /d "$(ProjectDir)lib\x64\SOIL\*.dll" "$(OutDir)" &amp;</Command>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="include\glm\detail\glm.cpp" />
     <ClCompile Include="LightSource.cpp" />
-    <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="PlayerInteraction.cpp" />
-    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="PlayerInteraction.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SimpleShape.cpp" />

@@ -21,12 +21,11 @@ Model& Model::operator=(const Model& other) {
 }
 
 void Model::Draw(Shader& shader) {
-    shader.use(); // Activate the shader program
+	shader.use(); // Activate the shader program
 	GLuint isLightedLocation = glGetUniformLocation(shader.ID, "isLighted");
     GLuint isTexturedLocation = glGetUniformLocation(shader.ID, "isTextured");
     glUniform1i(isTexturedLocation, 1); // daca obiectul este texturat, atunci trimit 1, altfel 0
     glUniform1i(isLightedLocation, (int)isLighted); // daca obiectul este supus iluminarii, atunci trimit 1, altfel 0
-
 	updateModelMatrix(); // Update the shader with the latest model matrix
 
     for (unsigned int i = 0; i < meshes.size(); i++)
@@ -123,12 +122,17 @@ void Model::rotateThenTranslate(GLfloat deg, glm::vec3 axis, glm::vec3 dir)
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), dir);
 
 	glm::vec3 center = calculateModelCenter();
-	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
-	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
+	//std::cerr << glm::to_string(center) << '\n';
 
+	glm::mat4 translationToCenter = glm::translate(glm::mat4(1.0f), -center);
+	//std::cerr << glm::to_string(translationToCenter) << '\n';
+	glm::mat4 translationBack = glm::translate(glm::mat4(1.0f), center);
+	//std::cerr << glm::to_string(translationBack) << '\n';
 	glm::mat4 rotationMatrix = glm::toMat4(quaternionRotation);
+	std::cerr << glm::to_string(rotationMatrix) << '\n';
 
 	modelMatrix = translationMatrix * modelMatrix; // Apply translation
+	//std::cerr << glm::to_string(modelMatrix) << '\n';
 	modelMatrix = translationBack * rotationMatrix * translationToCenter * modelMatrix; // Apply rotation 
 
 	std::cerr << glm::to_string(modelMatrix) << '\n';
