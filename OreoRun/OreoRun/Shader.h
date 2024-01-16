@@ -1,6 +1,8 @@
-#pragma once
-#include <string>
+#ifndef SHADER_H
+#define SHADER_H
+
 #include <GL/glew.h>
+#include <string>
 #include <loadShaders.h>
 #include <glm/ext/vector_float3.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -20,4 +22,6 @@ public:
 
 	~Shader();
 };
+
+#endif
 

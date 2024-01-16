@@ -16,10 +16,6 @@ out vec3 inLightPos;
 out vec3 inViewPos;
 out vec3 dir;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 model;
-
 uniform mat4 matrUmbra;
 uniform vec3 lightPos;
 uniform vec3 viewPos;

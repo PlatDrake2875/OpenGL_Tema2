@@ -2,9 +2,9 @@
 #ifndef PLAYERINTERACTION_H
 #define PLAYERINTERACTION_H
 
+#include <GL/freeglut.h>
 #include "Camera.h"
 #include "PlayerMovement.h"
-#include <GL/freeglut.h>
 #include <iostream>
 
 namespace PlayerInteraction

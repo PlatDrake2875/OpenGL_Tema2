@@ -4,6 +4,7 @@
 
 #include <GL/glew.h> // glew apare inainte de freeglut
 #include <GL/freeglut.h> // nu trebuie uitat freeglut.h
+#include "PlayerInteraction.h"
 #include "Camera.h"
 #include "LevelLoader.h"
 #include "loadShaders.h"
@@ -11,15 +12,14 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
 #include "Camera.h"
 #include "WindowInfo.h"
-#include "PlayerInteraction.h"
 #include <stdio.h>
 #include <stdlib.h> // necesare pentru citirea shader-elor
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
 #include "PlayerMovement.h"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 
 GLuint projectionLocation, modelLocation,
 matrUmbraLocation,

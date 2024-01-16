@@ -1,4 +1,6 @@
-#pragma once
+#ifndef LEVELLOADER_H
+#define LEVELLOADER_H
+
 #include <vector>
 #include "Model.h"
 
@@ -26,3 +28,4 @@ public:
 	void rotateModel(int index, GLfloat deg, glm::vec3 dir, Shader* shader);
 };
 
+#endif 

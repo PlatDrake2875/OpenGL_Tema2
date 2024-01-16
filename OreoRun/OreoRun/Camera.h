@@ -1,12 +1,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtx/transform.hpp"
 #include <GL/freeglut.h>
 #include "Constants.h"
 #include "WindowInfo.h"
 #include <iostream>
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/transform.hpp"
 
 class Camera
 {

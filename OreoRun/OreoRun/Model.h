@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MODEL_H
+#define MODEL_H
 
 #include "Mesh.h"
 #include "stb_image.h"
@@ -72,3 +73,5 @@ private:
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
     void setLighted(bool);  
 };
+
+#endif
