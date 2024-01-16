@@ -19,6 +19,7 @@ private:
 	static const float minDist, maxDist;
 public:
 	Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight);
+	void ProcessNormalKeys(unsigned char key, int x, int y);
 	void ProcessSpecialKeys(int key, int xx, int yy);
 	void mouseWheelFunction(int button, int dir, int x, int y);
 	void mouseMotionFunction(int x, int y);
@@ -26,9 +27,9 @@ public:
 	void setWatchPoint(const glm::vec3& newWatchPoint);
 	void setVertical(const glm::vec3& newPos);
 	void setZNear(float newZNear);
-	void setViewWidthAndHeight(float newWidth, float newHeight);
+	void setViewWidthAndHeight(GLint newWidth, GLint newHeight);
 	void setFOV(float newFov);
-	glm::mat4 getViewMatrix();
+	glm::mat4 getViewMatrix() const;
 	glm::mat4 getProjectionMatrix();
 	void updateCamera();
 };

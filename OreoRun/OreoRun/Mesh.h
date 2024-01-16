@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Shader.h"
 #include "glm/glm.hpp"
+#include "Shader.h"
 #include <string>
 #include <vector>
 
@@ -28,6 +28,9 @@ public:
 
     // deseneaza pe ecran mesh-ul
     void Draw(Shader& shader);
+
+    // Setters
+    void setVertices(const std::vector<Vertex>& newVertices);
 
 private:
     unsigned int VBO, EBO;
