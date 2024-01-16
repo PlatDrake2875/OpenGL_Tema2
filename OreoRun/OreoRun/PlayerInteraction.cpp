@@ -4,7 +4,6 @@ namespace PlayerInteraction
 {
 	Camera* camera = nullptr;
 	bool isPlayerInteracting = true;
-	PlayerMovement* playerMov = new PlayerMovement();
 
 	void ProcessSpecialKeys(int key, int xx, int yy)
 	{
@@ -20,9 +19,6 @@ namespace PlayerInteraction
 
 		if(!isPlayerInteracting)
 			return;
-
-		playerMov->ProcessNormalKeys(key, x, y);
-		
 
 		switch(key) {
 			case 27:

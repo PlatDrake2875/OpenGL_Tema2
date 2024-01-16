@@ -12,14 +12,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include "Camera.h"
 #include "WindowInfo.h"
 #include <stdio.h>
 #include <stdlib.h> // necesare pentru citirea shader-elor
 #include <windows.h>  // biblioteci care urmeaza sa fie incluse
-#include "PlayerMovement.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
+#include "PlayerMovement.h"
 
 GLuint projectionLocation, modelLocation,
 matrUmbraLocation,
@@ -38,6 +37,7 @@ Shader* shader;
 LevelLoader lloader;
 Camera* camera;
 Model* skybox;
+PlayerMovement* playerMov = new PlayerMovement();
 
 void displayFPS(int value) {
 	double currentTime = glutGet(GLUT_ELAPSED_TIME);
@@ -89,6 +89,13 @@ void Initialize(void)
 	PlayerInteraction::camera = camera;
 }
 
+void ProcessNormalKeys(unsigned char key, int x, int y)
+{
+	PlayerInteraction::ProcessNormalKeys(key, x, y);
+	if (PlayerInteraction::isPlayerInteracting)
+		playerMov->updatePlayerPosition();
+}
+
 void Cleanup(void)
 {
 	delete shader;		// sterge obiectul shader
@@ -108,8 +115,8 @@ void RenderFunction(void)
 	glm::vec3 dir(1.0f, 1.0f, 1.0f);
 
 	// Sandbox
-	PlayerInteraction::playerMov->setPlayer(lloader.getModel(0));
-	lloader.setModel(0, PlayerInteraction::playerMov->getPlayer());
+	playerMov->setPlayer(lloader.getModel(0));
+	lloader.setModel(0, playerMov->getPlayer());
 	//lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
 	//lloader.translateModel(0, dir);
 	//lloader.scaleModel(1, 1.01f);
@@ -148,7 +155,7 @@ int main(int argc, char* argv[])
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);
 	glutMouseFunc(PlayerInteraction::HandleMouseClick);
-	glutKeyboardFunc(PlayerInteraction::ProcessNormalKeys);
+	glutKeyboardFunc(ProcessNormalKeys);
 	glutSpecialFunc(PlayerInteraction::ProcessSpecialKeys);
 	glutMouseWheelFunc(PlayerInteraction::MouseWheelFunction);
 	glutPassiveMotionFunc(PlayerInteraction::MouseMotionFunction);

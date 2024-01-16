@@ -4,14 +4,12 @@
 
 #include <GL/freeglut.h>
 #include "Camera.h"
-#include "PlayerMovement.h"
 #include <iostream>
 
 namespace PlayerInteraction
 {
 	extern Camera* camera;
 	extern bool isPlayerInteracting;
-	extern PlayerMovement* playerMov;
 	extern void ProcessSpecialKeys(int key, int xx, int yy);
 	extern void MouseWheelFunction(int button, int dir, int x, int y);
 	extern void MouseMotionFunction(int x, int y);
