@@ -33,7 +33,7 @@ Camera* camera;
 Model* skybox;
 
 // sursa de lumina
-float xL = 500.f, yL = 100.f, zL = 400.f;
+float xL = -500.f, yL = 0.f, zL = -400.f;
 
 // matricea umbrei
 float matrUmbra[4][4];
