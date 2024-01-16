@@ -48,6 +48,28 @@ void Mesh::Draw(Shader& shader) {
     glActiveTexture(GL_TEXTURE0);
 }
 
+//! Update both the verices data and the OpenGL buffers
+void Mesh::setVertices(const std::vector<Vertex>& newVertices) {
+    vertices = newVertices;  
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Position));
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+
+    glBindVertexArray(0);
+}
+
+
 void Mesh::setupMesh() {
     // se creeaza buffer-ele si array-urile
     glGenVertexArrays(1, &VAO);

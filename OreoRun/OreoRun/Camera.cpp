@@ -3,7 +3,7 @@
 const float Camera::minDist = 50.f;
 const float Camera::maxDist = 300.f;
 
-Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, float winWidth, float winHeight) {
+Camera::Camera(const glm::vec3& cameraPos, const glm::vec3& watchPoint, const glm::vec3& vertical, GLint winWidth, GLint winHeight) {
 	this->cameraPos = glm::vec3(cameraPos);
 	this->watchPoint = glm::vec3(watchPoint);
 	this->vertical = glm::vec3(vertical);
@@ -100,7 +100,7 @@ void Camera::setZNear(float newZNear)
 	this->zNear = zNear;
 }
 
-void Camera::setViewWidthAndHeight(float newWidth, float newHeight)
+void Camera::setViewWidthAndHeight(GLint newWidth, GLint newHeight)
 {
 	this->width = newWidth;
 	this->height = newHeight;
@@ -111,7 +111,7 @@ void Camera::setFOV(float)
 	this->fov = fov;
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
 	return glm::lookAt(cameraPos, watchPoint, vertical);
 }

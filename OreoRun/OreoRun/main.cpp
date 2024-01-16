@@ -1,21 +1,25 @@
 // Oreo race
 // Codul sursa este adaptat dupa OpenGLBook.com
 
-#include <windows.h>  // biblioteci care urmeaza sa fie incluse
-#include <stdlib.h> // necesare pentru citirea shader-elor
-#include <stdio.h>
+
 #include <GL/glew.h> // glew apare inainte de freeglut
 #include <GL/freeglut.h> // nu trebuie uitat freeglut.h
+#include "Camera.h"
+#include "LevelLoader.h"
 #include "loadShaders.h"
 #include "Model.h"
-#include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/transform.hpp"
 #include "Camera.h"
 #include "WindowInfo.h"
 #include "PlayerInteraction.h"
+#include <stdio.h>
+#include <stdlib.h> // necesare pentru citirea shader-elor
+#include <windows.h>  // biblioteci care urmeaza sa fie incluse
+#include "PlayerMovement.h"
 
 GLuint projectionLocation, modelLocation,
 matrUmbraLocation,
@@ -27,26 +31,31 @@ lightPosLocation,
 viewPosLocation,
 codColLocation;
 
+int nbFrames = 0;
+double lastTime;
+
 Shader* shader;
-Model* oreo;
+LevelLoader lloader;
 Camera* camera;
 Model* skybox;
+
+void displayFPS(int value) {
+	double currentTime = glutGet(GLUT_ELAPSED_TIME);
+	nbFrames++;
+	if (currentTime - lastTime >= 1000.0) { // If last print was more than 1 sec ago
+		std::cout << nbFrames << " FPS\n";
+		nbFrames = 0;
+		lastTime += 1000.0;
+	}
+	glutTimerFunc(100, displayFPS, 0); // Re-register the timer for the next call
+}
+
 
 // sursa de lumina
 float xL = -2500.f, yL = 0.f, zL = -1400.f;
 
 // matricea umbrei
 float matrUmbra[4][4];
-
-void CreateModels() {
-	skybox = new Model("skyboxes/skybox_1/scene.gltf", true);
-	oreo = new Model("models/oreo/scene.gltf");
-}
-
-void DestroyModels() {
-	delete oreo;
-	delete skybox;
-}
 
 void Initialize(void)
 {
@@ -63,10 +72,10 @@ void Initialize(void)
 	lightPosLocation = shader->getUniformLocation("lightPos");
 	viewPosLocation = shader->getUniformLocation( "viewPos");
 
-	glClearColor(0.15f, 0.f, 0.5f, 1.0f); // culoarea de funal a ecranului
-
-	CreateModels(); // initializam modelele 3d
+	glClearColor(0.15f, 0.f, 0.5f, 1.f); // culoarea de fundal a ecranului
 	
+	lloader.loadModels(shader);
+
 	// initiem camera
 	camera = new Camera(
 		glm::vec3(0.f, 0.f, 300.f), 
@@ -82,7 +91,6 @@ void Initialize(void)
 
 void Cleanup(void)
 {
-	DestroyModels();	// distruge modelele incarcate
 	delete shader;		// sterge obiectul shader
 }
 
@@ -97,17 +105,15 @@ void RenderFunction(void)
 	glm::mat4 projection = camera->getProjectionMatrix();
 	glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, &projection[0][0]);
 
+	glm::vec3 dir(1.0f, 1.0f, 1.0f);
 
-	glm::mat4 model = glm::scale(glm::vec3(0.5f, 0.5f, 0.5f));
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &model[0][0]);
-
-	oreo->Draw(*shader);
-
-	model = glm::scale(glm::vec3(1000.f, 1000.f, 1000.f));
-	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, &model[0][0]);
-
-	skybox->Draw(*shader);
-	
+	// Sandbox
+	PlayerInteraction::playerMov->setPlayer(lloader.getModel(0));
+	lloader.setModel(0, PlayerInteraction::playerMov->getPlayer());
+	//lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
+	//lloader.translateModel(0, dir);
+	//lloader.scaleModel(1, 1.01f);
+	lloader.drawModels(shader);
 	camera->updateCamera();
 
 	// matricea pentru umbra
@@ -136,6 +142,8 @@ int main(int argc, char* argv[])
 	glutCreateWindow("Oreo Run"); 
 	glewInit(); // FUNCTIA ASTA TREBUIE APELATA INAINTEA FOLOSIRII ORICAREI ALT`A FUNCTIE DIN GLEW (SAU GL)
 	Initialize(); 
+	lastTime = glutGet(GLUT_ELAPSED_TIME);
+	glutTimerFunc(100, displayFPS, 0); // Register the timer callback
 	glutReshapeFunc(PlayerInteraction::ReshapeWindowFunction);
 	glutDisplayFunc(RenderFunction);
 	glutIdleFunc(RenderFunction);

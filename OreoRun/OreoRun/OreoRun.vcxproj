@@ -185,6 +185,8 @@ xcopy /y /d "$(ProjectDir)lib\x64\SOIL\*.dll" "$(OutDir)" &amp;</Command>
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="PlayerInteraction.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
+    <ClCompile Include="PlayerMovement.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SimpleShape.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -497,6 +499,8 @@ xcopy /y /d "$(ProjectDir)lib\x64\SOIL\*.dll" "$(OutDir)" &amp;</Command>
     <ClInclude Include="Model.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="PlayerInteraction.h" />
+    <ClInclude Include="LevelLoader.h" />
+    <ClInclude Include="PlayerMovement.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleShape.h" />
     <ClInclude Include="WindowInfo.h" />
