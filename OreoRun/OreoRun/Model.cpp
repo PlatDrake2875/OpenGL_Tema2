@@ -2,13 +2,19 @@
 
 
 
-Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma)
+Model::Model(std::string const& path, bool isSkyBox, bool gamma) : gammaCorrection(gamma)
 {
     loadModel(path);
+    if(isSkyBox)
+		setLighted(false);
 }
 
 void Model::Draw(Shader& shader)
 {
+    GLuint isLightedLocation = glGetUniformLocation(shader.ID, "isLighted");
+    GLuint isTexturedLocation = glGetUniformLocation(shader.ID, "isTextured");
+    glUniform1i(isTexturedLocation, 1); // daca obiectul este texturat, atunci trimit 1, altfel 0
+    glUniform1i(isLightedLocation, (int)isLighted); // daca obiectul este supus iluminarii, atunci trimit 1, altfel 0
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
 }
@@ -157,6 +163,11 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         }
     }
     return textures;
+}
+
+void Model::setLighted(bool lightedState)
+{
+    isLighted = lightedState;
 }
 
 unsigned int TextureFromFile(const char* path, const std::string& directory)

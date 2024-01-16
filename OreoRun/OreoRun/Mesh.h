@@ -6,7 +6,6 @@
 #include <vector>
 
 
-
 struct Vertex {
     glm::vec3 Position, Normal;
     glm::vec2 TexCoords;

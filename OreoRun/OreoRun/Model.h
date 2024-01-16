@@ -18,9 +18,10 @@ public:
     std::vector<Mesh> meshes;
     std::string directory;
     bool gammaCorrection;
+    bool isLighted = true;
 
     // constructor, expects a filepath to a 3D model.
-    Model(const std::string& path, const bool gamma = false);
+    Model(const std::string& path, const bool isSkyBox = false, const bool gamma = false);
 
     void Draw(Shader& shader);
 
@@ -29,4 +30,5 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Mesh processMesh(aiMesh* mesh, const aiScene* scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName);
+    void setLighted(bool);  
 };

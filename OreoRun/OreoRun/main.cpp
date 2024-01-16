@@ -33,28 +33,19 @@ Camera* camera;
 Model* skybox;
 
 // sursa de lumina
-float xL = -500.f, yL = 0.f, zL = -400.f;
+float xL = -2500.f, yL = 0.f, zL = -1400.f;
 
 // matricea umbrei
 float matrUmbra[4][4];
 
-float PI = 3.141592;
-
-// cilindrul
-float const U_MIN = 0, U_MAX = 2 * PI, V_MIN = 50, V_MAX = 150;
-// numarul de paralele/meridiane, de fapt numarul de valori ptr parametri
-int const NR_PARR = 30, NR_MERID = 30;
-// pasul cu care vom incrementa u, respectiv v
-float step_u = (U_MAX - U_MIN) / NR_PARR, step_v = (V_MAX - V_MIN) / NR_MERID;
-
-
 void CreateModels() {
-	skybox = new Model("skyboxes/skybox_1/scene.gltf");
+	skybox = new Model("skyboxes/skybox_1/scene.gltf", true);
 	oreo = new Model("models/oreo/scene.gltf");
 }
 
 void DestroyModels() {
 	delete oreo;
+	delete skybox;
 }
 
 void Initialize(void)
@@ -128,7 +119,7 @@ void RenderFunction(void)
 	glUniformMatrix4fv(matrUmbraLocation, 1, GL_FALSE, &matrUmbra[0][0]);
 
 	// Variabile uniforme pentru iluminare
-	glUniform3f(lightColorLocation, 1.0f, 1.0f, 1.0f);
+	glUniform3f(lightColorLocation, 1.0f, 1.0f, 0.9f);
 	glUniform3f(lightPosLocation, xL, yL, zL);
 
 	glutSwapBuffers();

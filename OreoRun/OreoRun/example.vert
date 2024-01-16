@@ -20,10 +20,9 @@ uniform mat4 matrUmbra;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform vec3 lightColor;
-uniform int codCol;
+
 
 out vec4 gl_Position; 
-out vec4 ex_Color;
 out vec2 texCoords;
 
 vec4 inPosition = vec4(in_Position, 1.0);
@@ -34,7 +33,6 @@ void main ()
 {
 	gl_Position = myMatrix * inPosition;
 	texCoords = in_texCoords;
-    // ex_Color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 
     Normal = mat3(myMatrix) * in_Normal; 
     inLightPos = vec3(myMatrix * vec4(lightPos, 1.0f));
