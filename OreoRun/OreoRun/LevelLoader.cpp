@@ -29,7 +29,8 @@ void LevelLoader::setModel(int index, Model* _model)
 void LevelLoader::loadModels(Shader* shader)
 {
 	models.push_back(new Model("models/oreo/oreo_4.gltf")); // Oreo King
-	models.push_back(new Model("models/christmas_ball/scene.gltf")); // Test christmas ball
+	//models.push_back(new Model("models/christmas_ball/scene.gltf")); // Test christmas ball
+	models.push_back(new Model("skyboxes/skybox_1/scene.gltf", true)); // Oreo King
 
 	for (auto& model : models)
 		model->setShaderProgram(shader->ID);
@@ -37,8 +38,13 @@ void LevelLoader::loadModels(Shader* shader)
 
 void LevelLoader::drawModels(Shader* shader)
 {
-	for (auto model : models)
-		model->Draw(*shader);
+	for (auto model : models) {
+		if(model->isSkyBox)
+			model->DrawSkyBox(*shader);
+		else
+			model->Draw(*shader);
+	}
+		
 }
 
 void LevelLoader::scaleModel(int index, GLfloat scaleFactor)

@@ -92,8 +92,8 @@ void Initialize(void)
 void ProcessNormalKeys(unsigned char key, int x, int y)
 {
 	PlayerInteraction::ProcessNormalKeys(key, x, y);
-	if (PlayerInteraction::isPlayerInteracting)
-		playerMov->updatePlayerPosition();
+	if(PlayerInteraction::isPlayerInteracting)
+		playerMov->ProcessNormalKeys(key, x, y);
 }
 
 void Cleanup(void)

@@ -5,6 +5,7 @@
 Model::Model(std::string const& path, bool isSkyBox, bool gamma) : gammaCorrection(gamma)
 {
     loadModel(path);
+	this->isSkyBox = isSkyBox;
     if(isSkyBox)
 		setLighted(false);
 }
@@ -30,6 +31,14 @@ void Model::Draw(Shader& shader) {
 	for (unsigned int i = 0; i < meshes.size(); i++) {
 		meshes[i].Draw(shader);
 	}
+}
+
+void Model::DrawSkyBox(Shader& shader)
+{
+	glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(10000.0f, 10000.0f, 10000.0f));
+	modelMatrix = scale;
+	updateModelMatrix();
+	Draw(shader);
 }
 
 
