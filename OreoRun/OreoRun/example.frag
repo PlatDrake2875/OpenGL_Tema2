@@ -32,7 +32,11 @@ void main(void)
         vec3 usedColor3 = vec3(usedColor);
 
         // Ambient
+<<<<<<< Updated upstream
         float ambientStrength = 2.f;
+=======
+        float ambientStrength = 1.f;
+>>>>>>> Stashed changes
         vec3 ambient = ambientStrength * lightColor;
         vec3 ambient_term = ambient * usedColor3;
 
