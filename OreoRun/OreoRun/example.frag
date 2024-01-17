@@ -18,9 +18,12 @@ uniform vec4 objectColor;   // culoarea obiectului, daca nu are textura pusa
 uniform int isLighted;  // 1 daca obiectul este luminat, 0 altfel
 uniform int isLightSource;  // 1 daca obiectul este o sursa de lumina, 0 altfel
 uniform int isTextured;     // 1 daca obiectul are textura pusa, 0 altfel
+uniform float roFactor;
 
 void main(void)
 {
+    float z = length(inViewPos - FragPos);
+    float fogFactor = exp(-z * roFactor);
     vec4 usedColor;
     if(isTextured == 1)
         usedColor = texture(textureMap, texCoords);
@@ -32,7 +35,7 @@ void main(void)
         vec3 usedColor3 = vec3(usedColor);
 
         // Ambient
-        float ambientStrength = 0.f;
+        float ambientStrength = 1.f;
         vec3 ambient = ambientStrength * lightColor;
         vec3 ambient_term = ambient * usedColor3;
 
@@ -54,7 +57,7 @@ void main(void)
         vec3 emission = vec3(0, 0, 0);
 
         vec3 result = (ambient_term + diffuse + specular_term) * usedColor3;
-        out_Color = vec4(result, usedColor.a);
+        out_Color = mix(vec4(0.5f, 0.5f, 0.5f, 1.0f), vec4(result, usedColor.a), fogFactor);
     }
     else {
 		out_Color = usedColor;

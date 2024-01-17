@@ -32,6 +32,7 @@ codColLocation;
 
 int nbFrames = 0;
 double lastTime;
+float roFactor = 0.1f;
 
 Shader* shader;
 LevelLoader lloader;
@@ -120,6 +121,7 @@ void RenderFunction(void)
 	//lloader.rotateModel(0, 10, glm::vec3(1.0f, 0.0f, 0.0f)); 
 	//lloader.translateModel(0, dir);
 	//lloader.scaleModel(1, 1.01f);
+	glUniform1f(shader->getUniformLocation("roFactor"), roFactor);
 	lloader.drawModels(shader);
 	camera->updateCamera();
 
