@@ -34,6 +34,8 @@ void PlayerMovement::ProcessNormalKeys(unsigned char key, int x, int y)
 	case ' ':
 		dir = glm::vec3(0.f, 0.f, 1.f);
 		break;
+	default:
+		return;
 	}
 	updatePlayerPosition();
 }
