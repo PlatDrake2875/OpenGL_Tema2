@@ -30,10 +30,13 @@ class Model
     bool gammaCorrection;
     bool isLighted = true;
 public:
+    bool isSkyBox = false;
     // constructor, expects a filepath to a 3D model.
     Model(const std::string& path, const bool isSkyBox = false, const bool gamma = false);
     Model() : gammaCorrection(false), shaderProgram(0), cumulativeRotation(glm::quat(1.f, 0.f, 0.f, 0.f)) {
+        std::cout << "Model constructor\n";
         std::cerr << glm::to_string(cumulativeRotation) << '\n';
+        isSkyBox = false;
         setLighted(false);
     }
     Model(const Model& other)
@@ -48,6 +51,8 @@ public:
 
     // DRAW METHOD
     void Draw(Shader& shader);
+
+    void DrawSkyBox(Shader& shader);
 
     // GETTERS
     std::vector<std::vector<Vertex>> GetVerticesOfEachMesh() const;
